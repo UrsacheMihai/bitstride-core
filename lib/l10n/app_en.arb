@@ -1,0 +1,189 @@
+{
+  "appTitle": "BitStride",
+  "loading": "Loading...",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "signOut": "Sign Out",
+  "signOutConfirm": "Are you sure you want to sign out?",
+  "cancel": "Cancel",
+  "save": "Save",
+  "settings": "Settings",
+  "darkMode": "Dark Mode",
+  "disableMotion": "Disable Motion",
+  "disableMotionSubtitle": "Replaces GIF mascots with static icons",
+  "language": "Language",
+  "displayName": "Display Name",
+  "changeName": "Change Name",
+  "enterDisplayName": "Enter display name",
+  "badges": "Badges",
+  "earnedBadges": "{count} earned",
+  "@earnedBadges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stats": "Stats",
+  "exercisesCompleted": "Exercises completed",
+  "challengesSolved": "Challenges solved",
+  "currentStreak": "Current streak",
+  "days": "{count} days",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalXP": "Total XP",
+  "learn": "Learn",
+  "practice": "Practice",
+  "leaderboard": "Leaderboard",
+  "profile": "Profile",
+  "level": "Level {lvl}",
+  "@level": {
+    "placeholders": {
+      "lvl": {
+        "type": "int"
+      }
+    }
+  },
+  "xpTotal": "{xp} XP total",
+  "@xpTotal": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "runCode": "Run Code",
+  "submit": "Submit",
+  "hint": "Hint",
+  "solution": "Solution",
+  "correct": "Correct!",
+  "incorrect": "Incorrect",
+  "nextLesson": "Next Lesson",
+  "backToLessons": "Back to Lessons",
+  "difficulty": "Difficulty",
+  "easy": "Easy",
+  "medium": "Medium",
+  "hard": "Hard",
+  "problemDescription": "Problem Description",
+  "providedFiles": "Provided Files:",
+  "example": "Example:",
+  "input": "Input:",
+  "output": "Output:",
+  "submitCode": "Submit Code",
+  "running": "Running...",
+  "allLevels": "All Levels",
+  "noChallenges": "No challenges match your filters",
+  "noCourses": "No courses available yet",
+  "lesson": "Lesson",
+  "learnTab": "Learn",
+  "practiceTab": "Practice",
+  "dayStreak": "Day Streak!",
+  "keepPracticing": "Keep practicing to maintain your streak",
+  "current": "Current",
+  "xpLabel": "XP",
+  "done": "Done",
+  "keepLearning": "Keep Learning",
+  "searchChallenges": "Search challenges...",
+  "category": "Category",
+  "method": "Method",
+  "allCategories": "All",
+  "allMethods": "All",
+  "markAsRead": "Mark as Read",
+  "lessonCompleted": "Lesson marked as completed!",
+  "theoryOnly": "Theory Lesson",
+  "forgotPassword": "Forgot Password?",
+  "resetPasswordTitle": "Reset Password",
+  "resetPasswordDesc": "Enter your email to receive a reset link",
+  "sendResetLink": "Send Reset Link",
+  "resetEmailSent": "Password reset email sent!",
+  "theoryBadge": "Theory",
+  "codeBadge": "Code",
+  "clearFilters": "Clear Filters",
+  "resultsFound": "{count} results found",
+  "@resultsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "noAccount": "Don't have an account? Sign Up",
+  "haveAccount": "Already have an account? Sign In",
+  "visualizeTab": "Visualize",
+  "applyFilters": "Apply Filters",
+  "quizQuestion": "Quiz Question",
+  "multipleChoice": "Multiple Choice",
+  "perfectScore": "Perfect Score!",
+  "lessonFinished": "Lesson Completed!",
+  "theoryRead": "Theory Read",
+  "quizScore": "Quiz Score",
+  "codeTests": "Code Tests",
+  "totalXpScore": "Total XP Score",
+  "gainedXp": "You gained +{count} XP!",
+  "@gainedXp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "answerAllQuizzes": "Answer all quizzes to finish",
+  "runCodeOnce": "Run code at least once to finish",
+  "finishLesson": "Finish Lesson",
+  "continueBtn": "Continue",
+  "redoNoXp": "Redo - No new XP awarded",
+  "mixedBadge": "Mixed",
+  "testsPassed": "{passed} / {total} tests passed ({percentage}%)",
+  "@testsPassed": {
+    "placeholders": {
+      "passed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "testHidden": "Test {index} (hidden)",
+  "@testHidden": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "testIndex": "Test {index}",
+  "@testIndex": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "expectedAndGot": "Expected: {expected}\nGot: {got}",
+  "@expectedAndGot": {
+    "placeholders": {
+      "expected": {
+        "type": "String"
+      },
+      "got": {
+        "type": "String"
+      }
+    }
+  },
+  "quizExplanation": "Explanation",
+  "quizExplanationHint": "Enter explanation for incorrect answers...",
+  "quizOptionExplanationHint": "Explanation if incorrect (each can differ)...",
+  "ideThemeTitle": "IDE Editor Theme"
+}

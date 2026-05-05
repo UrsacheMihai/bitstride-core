@@ -1,0 +1,189 @@
+{
+  "appTitle": "BitStride",
+  "loading": "Se încarcă...",
+  "login": "Autentificare",
+  "email": "Email",
+  "password": "Parolă",
+  "signOut": "Deconectare",
+  "signOutConfirm": "Sigur dorești să te deconectezi?",
+  "cancel": "Anulare",
+  "save": "Salvare",
+  "settings": "Setări",
+  "darkMode": "Mod Întunecat",
+  "disableMotion": "Dezactivare Animații",
+  "disableMotionSubtitle": "Înlocuiește mascotele GIF cu pictograme statice",
+  "language": "Limbă",
+  "displayName": "Numele afișat",
+  "changeName": "Schimbă Numele",
+  "enterDisplayName": "Introdu numele afișat",
+  "badges": "Insigne",
+  "earnedBadges": "{count} obținute",
+  "@earnedBadges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stats": "Statistici",
+  "exercisesCompleted": "Exerciții completate",
+  "challengesSolved": "Provocări rezolvate",
+  "currentStreak": "Seria curentă",
+  "days": "{count} zile",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalXP": "XP Total",
+  "learn": "Învățare",
+  "practice": "Practică",
+  "leaderboard": "Clasament",
+  "profile": "Profil",
+  "level": "Nivel {lvl}",
+  "@level": {
+    "placeholders": {
+      "lvl": {
+        "type": "int"
+      }
+    }
+  },
+  "xpTotal": "{xp} XP total",
+  "@xpTotal": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "runCode": "Rulează Codul",
+  "submit": "Trimite",
+  "hint": "Indiciu",
+  "solution": "Soluție",
+  "correct": "Corect!",
+  "incorrect": "Incorect",
+  "nextLesson": "Lecția Următoare",
+  "backToLessons": "Înapoi la Lecții",
+  "difficulty": "Dificultate",
+  "easy": "Ușor",
+  "medium": "Mediu",
+  "hard": "Greu",
+  "problemDescription": "Descrierea Problemei",
+  "providedFiles": "Fișiere Oferite:",
+  "example": "Exemplu:",
+  "input": "Intrare:",
+  "output": "Ieșire:",
+  "submitCode": "Trimite Codul",
+  "running": "Se rulează...",
+  "allLevels": "Toate Nivelurile",
+  "noChallenges": "Nicio provocare nu se potrivește cu filtrele tale",
+  "noCourses": "Niciun curs disponibil încă",
+  "lesson": "Lecție",
+  "learnTab": "Învățare",
+  "practiceTab": "Practică",
+  "dayStreak": "Zile la Rând!",
+  "keepPracticing": "Continuă să practici pentru a-ți menține seria",
+  "current": "Curent",
+  "xpLabel": "XP",
+  "done": "Gata",
+  "keepLearning": "Continuă Învățarea",
+  "searchChallenges": "Caută provocări...",
+  "category": "Categorie",
+  "method": "Metodă",
+  "allCategories": "Toate",
+  "allMethods": "Toate",
+  "markAsRead": "Marchează ca Citit",
+  "lessonCompleted": "Lecția a fost marcată ca finalizată!",
+  "theoryOnly": "Lecție Teoretică",
+  "forgotPassword": "Ai uitat parola?",
+  "resetPasswordTitle": "Resetare Parolă",
+  "resetPasswordDesc": "Introdu adresa ta de email pentru a primi un link de resetare",
+  "sendResetLink": "Trimite Link-ul de Resetare",
+  "resetEmailSent": "Email-ul pentru resetarea parolei a fost trimis!",
+  "theoryBadge": "Teorie",
+  "codeBadge": "Cod",
+  "clearFilters": "Șterge Filtrele",
+  "resultsFound": "{count} rezultate găsite",
+  "@resultsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signIn": "Autentificare",
+  "signUp": "Înregistrare",
+  "noAccount": "Nu ai cont? Înregistrează-te",
+  "haveAccount": "Ai deja un cont? Autentifică-te",
+  "visualizeTab": "Vizualizare",
+  "applyFilters": "Aplică Filtrele",
+  "quizQuestion": "Întrebare Chestionar",
+  "multipleChoice": "Răspuns Multiplu",
+  "perfectScore": "Scor perfect!",
+  "lessonFinished": "Lecție finalizată!",
+  "theoryRead": "Teorie citită",
+  "quizScore": "Scor chestionar",
+  "codeTests": "Teste de cod",
+  "totalXpScore": "Scor total XP",
+  "gainedXp": "Ai câștigat +{count} XP!",
+  "@gainedXp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "answerAllQuizzes": "Răspunde la toate chestionarele pentru a termina",
+  "runCodeOnce": "Rulează codul cel puțin o dată pentru a termina",
+  "finishLesson": "Termină lecția",
+  "continueBtn": "Continuă",
+  "redoNoXp": "Refă - Nu se acordă XP nou",
+  "mixedBadge": "Mixt",
+  "testsPassed": "{passed} / {total} teste trecute ({percentage}%)",
+  "@testsPassed": {
+    "placeholders": {
+      "passed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "testHidden": "Testul {index} (ascuns)",
+  "@testHidden": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "testIndex": "Testul {index}",
+  "@testIndex": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "expectedAndGot": "Așteptat: {expected}\nObținut: {got}",
+  "@expectedAndGot": {
+    "placeholders": {
+      "expected": {
+        "type": "String"
+      },
+      "got": {
+        "type": "String"
+      }
+    }
+  },
+  "quizExplanation": "Explicație",
+  "quizExplanationHint": "Introdu explicația pentru răspunsurile incorecte...",
+  "quizOptionExplanationHint": "Explicație dacă este incorect (fiecare poate diferi)...",
+  "ideThemeTitle": "Temă editor IDE"
+}

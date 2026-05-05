@@ -1,0 +1,189 @@
+{
+  "appTitle": "BitStride",
+  "loading": "Chargement...",
+  "login": "Connexion",
+  "email": "E-mail",
+  "password": "Mot de passe",
+  "signOut": "Se déconnecter",
+  "signOutConfirm": "Êtes-vous sûr de vouloir vous déconnecter?",
+  "cancel": "Annuler",
+  "save": "Enregistrer",
+  "settings": "Paramètres",
+  "darkMode": "Mode Sombre",
+  "disableMotion": "Désactiver les animations",
+  "disableMotionSubtitle": "Remplace les mascottes GIF par des icônes statiques",
+  "language": "Langue",
+  "displayName": "Nom d'affichage",
+  "changeName": "Changer le nom",
+  "enterDisplayName": "Entrez le nom d'affichage",
+  "badges": "Badges",
+  "earnedBadges": "{count} obtenus",
+  "@earnedBadges": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stats": "Statistiques",
+  "exercisesCompleted": "Exercices terminés",
+  "challengesSolved": "Défis résolus",
+  "currentStreak": "Série actuelle",
+  "days": "{count} jours",
+  "@days": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalXP": "XP Total",
+  "learn": "Apprendre",
+  "practice": "Pratiquer",
+  "leaderboard": "Classement",
+  "profile": "Profil",
+  "level": "Niveau {lvl}",
+  "@level": {
+    "placeholders": {
+      "lvl": {
+        "type": "int"
+      }
+    }
+  },
+  "xpTotal": "{xp} XP total",
+  "@xpTotal": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "runCode": "Exécuter le code",
+  "submit": "Soumettre",
+  "hint": "Indice",
+  "solution": "Solution",
+  "correct": "Correct!",
+  "incorrect": "Incorrect",
+  "nextLesson": "Leçon Suivante",
+  "backToLessons": "Retour aux leçons",
+  "difficulty": "Difficulté",
+  "easy": "Facile",
+  "medium": "Moyen",
+  "hard": "Difficile",
+  "problemDescription": "Description du problème",
+  "providedFiles": "Fichiers Fournis :",
+  "example": "Exemple :",
+  "input": "Entrée :",
+  "output": "Sortie :",
+  "submitCode": "Soumettre le code",
+  "running": "Exécution...",
+  "allLevels": "Tous les niveaux",
+  "noChallenges": "Aucun défi ne correspond à vos filtres",
+  "noCourses": "Aucun cours disponible pour le moment",
+  "lesson": "Leçon",
+  "learnTab": "Apprendre",
+  "practiceTab": "Pratiquer",
+  "dayStreak": "Jours consécutifs!",
+  "keepPracticing": "Continuez à pratiquer pour maintenir votre série",
+  "current": "Actuel",
+  "xpLabel": "XP",
+  "done": "Terminé",
+  "keepLearning": "Continuer à Apprendre",
+  "searchChallenges": "Rechercher des défis...",
+  "category": "Catégorie",
+  "method": "Méthode",
+  "allCategories": "Toutes",
+  "allMethods": "Toutes",
+  "markAsRead": "Marquer comme lu",
+  "lessonCompleted": "Leçon marquée comme terminée!",
+  "theoryOnly": "Leçon théorique",
+  "forgotPassword": "Mot de passe oublié?",
+  "resetPasswordTitle": "Réinitialiser le mot de passe",
+  "resetPasswordDesc": "Entrez votre adresse e-mail pour recevoir un lien de réinitialisation",
+  "sendResetLink": "Envoyer le lien de réinitialisation",
+  "resetEmailSent": "E-mail de réinitialisation envoyé!",
+  "theoryBadge": "Théorie",
+  "codeBadge": "Code",
+  "clearFilters": "Effacer les filtres",
+  "resultsFound": "{count} résultats trouvés",
+  "@resultsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signIn": "Se connecter",
+  "signUp": "S'inscrire",
+  "noAccount": "Pas de compte? S'inscrire",
+  "haveAccount": "Vous avez déjà un compte? Se connecter",
+  "visualizeTab": "Visualiser",
+  "applyFilters": "Appliquer les filtres",
+  "quizQuestion": "Question du Quiz",
+  "multipleChoice": "Choix Multiple",
+  "perfectScore": "Score parfait !",
+  "lessonFinished": "Leçon terminée !",
+  "theoryRead": "Théorie lue",
+  "quizScore": "Score du quiz",
+  "codeTests": "Tests de code",
+  "totalXpScore": "Score total de XP",
+  "gainedXp": "Vous avez gagné +{count} XP !",
+  "@gainedXp": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "answerAllQuizzes": "Répondez à tous les quiz pour terminer",
+  "runCodeOnce": "Exécutez le code au moins une fois pour terminer",
+  "finishLesson": "Terminer la leçon",
+  "continueBtn": "Continuer",
+  "redoNoXp": "Refaire - Pas de nouveaux XP attribués",
+  "mixedBadge": "Mixte",
+  "testsPassed": "{passed} / {total} tests réussis ({percentage}%)",
+  "@testsPassed": {
+    "placeholders": {
+      "passed": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
+  "testHidden": "Test {index} (masqué)",
+  "@testHidden": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "testIndex": "Test {index}",
+  "@testIndex": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "expectedAndGot": "Attendu: {expected}\nObtenu: {got}",
+  "@expectedAndGot": {
+    "placeholders": {
+      "expected": {
+        "type": "String"
+      },
+      "got": {
+        "type": "String"
+      }
+    }
+  },
+  "quizExplanation": "Explication",
+  "quizExplanationHint": "Entrez l'explication pour les mauvaises réponses...",
+  "quizOptionExplanationHint": "Explication si incorrecte (chaque peut différer)...",
+  "ideThemeTitle": "Thème de l'éditeur IDE"
+}
