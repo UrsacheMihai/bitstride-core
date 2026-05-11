@@ -1,0 +1,202 @@
+[
+  {
+    "language": "python",
+    "limitMb": 10,
+    "allocatedMb": 2,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 2097152",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 10,
+    "allocatedMb": 8,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 8388608",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 10,
+    "allocatedMb": 15,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (10 MB)\nTraceback (most recent call last):\n  File \"/box/submission/file0.code\", line 16, in <module>\n    data = bytearray(15 * 1024 * 1024)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nMemoryError\n"
+  },
+  {
+    "language": "python",
+    "limitMb": 10,
+    "allocatedMb": 40,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (10 MB)\nTraceback (most recent call last):\n  File \"/box/submission/file0.code\", line 16, in <module>\n    data = bytearray(40 * 1024 * 1024)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nMemoryError\n"
+  },
+  {
+    "language": "python",
+    "limitMb": 32,
+    "allocatedMb": 10,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 10485760",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 32,
+    "allocatedMb": 25,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 26214400",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 32,
+    "allocatedMb": 50,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (32 MB)\nTraceback (most recent call last):\n  File \"/box/submission/file0.code\", line 16, in <module>\n    data = bytearray(50 * 1024 * 1024)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nMemoryError\n"
+  },
+  {
+    "language": "python",
+    "limitMb": 64,
+    "allocatedMb": 20,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 20971520",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 64,
+    "allocatedMb": 50,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated successfully: 52428800",
+    "error": null
+  },
+  {
+    "language": "python",
+    "limitMb": 64,
+    "allocatedMb": 90,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (64 MB)\nTraceback (most recent call last):\n  File \"/box/submission/file0.code\", line 16, in <module>\n    data = bytearray(90 * 1024 * 1024)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nMemoryError\n"
+  },
+  {
+    "language": "cpp",
+    "limitMb": 10,
+    "allocatedMb": 2,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 2097152",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 10,
+    "allocatedMb": 8,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 8388608",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 10,
+    "allocatedMb": 15,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (10 MB)\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n/piston/packages/gcc/10.2.0/run: line 6:     3 Aborted                 (core dumped) ./a.out \"$@\"\n"
+  },
+  {
+    "language": "cpp",
+    "limitMb": 10,
+    "allocatedMb": 30,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (10 MB)\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n/piston/packages/gcc/10.2.0/run: line 6:     3 Aborted                 (core dumped) ./a.out \"$@\"\n"
+  },
+  {
+    "language": "cpp",
+    "limitMb": 32,
+    "allocatedMb": 10,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 10485760",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 32,
+    "allocatedMb": 25,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 26214400",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 32,
+    "allocatedMb": 50,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (32 MB)\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n/piston/packages/gcc/10.2.0/run: line 6:     3 Aborted                 (core dumped) ./a.out \"$@\"\n"
+  },
+  {
+    "language": "cpp",
+    "limitMb": 64,
+    "allocatedMb": 20,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 20971520",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 64,
+    "allocatedMb": 50,
+    "expectedPass": true,
+    "actualPass": true,
+    "isMle": false,
+    "output": "Allocated size: 52428800",
+    "error": null
+  },
+  {
+    "language": "cpp",
+    "limitMb": 64,
+    "allocatedMb": 90,
+    "expectedPass": false,
+    "actualPass": false,
+    "isMle": true,
+    "output": "",
+    "error": "💾 Memory Limit Exceeded (64 MB)\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n/piston/packages/gcc/10.2.0/run: line 6:     3 Aborted                 (core dumped) ./a.out \"$@\"\n"
+  }
+]
