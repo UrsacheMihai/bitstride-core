@@ -12,4 +12,34 @@ class DatabaseService {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  Future<UserProgress> loadUserProgress() async {
+    final raw = _prefs.getString(_userKey);
+    if (raw == null) return UserProgress();
+    return UserProgress.fromJson(jsonDecode(raw));
+  }
+
+  Future<void> saveUserProgress(UserProgress progress) async {
+    await _prefs.setString(_userKey, jsonEncode(progress.toJson()));
+  }
+
+  Future<Map<String, dynamic>> loadSettings() async {
+    final raw = _prefs.getString(_settingsKey);
+    if (raw == null) {
+      return {
+        'dark_mode': true,
+        'language': 'en',
+        'disable_motion': false,
+      };
+    }
+    return Map<String, dynamic>.from(jsonDecode(raw));
+  }
+
+  Future<void> saveSettings(Map<String, dynamic> settings) async {
+    await _prefs.setString(_settingsKey, jsonEncode(settings));
+  }
+
+  Future<void> clearAll() async {
+    await _prefs.remove(_userKey);
+    await _prefs.remove(_settingsKey);
+  }
 }

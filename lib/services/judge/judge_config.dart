@@ -18,4 +18,33 @@ class JudgeConfig {
     }
     return _explicitOverrideUrl ?? defaultLocalUrl;
   }
+
+  static String get pistonExecuteUrl => '$pistonBaseUrl/api/v2/execute';
+
+  static String get pistonRuntimesUrl => '$pistonBaseUrl/api/v2/runtimes';
+
+  static String? get firestoreBaseUrl => _firestoreBaseUrl;
+
+  static void setBaseUrl(String url) {
+    final cleanUrl = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
+    _explicitOverrideUrl = cleanUrl;
+  }
+
+  static void setFirestoreBaseUrl(String url) {
+    final cleanUrl = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
+    _firestoreBaseUrl = cleanUrl;
+  }
+
+  static const Map<String, PistonRuntime> runtimes = {
+    'cpp': PistonRuntime(language: 'c++', version: '10.2.0'),
+    'python': PistonRuntime(language: 'python', version: '3.12.0'),
+  };
+}
+
+// Store the runtime language and version pair for a Piston execution request.
+class PistonRuntime {
+  final String language;
+  final String version;
+
+  const PistonRuntime({required this.language, required this.version});
 }

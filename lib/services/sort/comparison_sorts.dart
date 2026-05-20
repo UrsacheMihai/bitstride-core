@@ -52,4 +52,79 @@ extension ComparisonSorts on SortAlgorithms {
       if (!swapped) break;
     }
   }
+
+  Stream<SortEvent> insertionSort(List<int> a) async* {
+    _reset();
+    for (int i = 1; i < a.length; i++) {
+      final key = a[i];
+      _acc++;
+      int j = i - 1;
+      yield _evt(a, comp: {i}, codeLine: 4);
+      await _delay();
+      while (j >= 0 && a[j] > key) {
+        _cmp++;
+        _acc += 2;
+        a[j + 1] = a[j];
+        _swp++;
+        yield _evt(a, swap: {j, j + 1}, codeLine: 5);
+        await _delay();
+        j--;
+      }
+      if (j >= 0) _cmp++;
+      a[j + 1] = key;
+      _acc++;
+    }
+  }
+
+  Stream<SortEvent> cycleSort(List<int> a) async* {
+    _reset();
+    final n = a.length;
+    for (int cs = 0; cs < n - 1; cs++) {
+      int item = a[cs];
+      _acc++;
+      int pos = cs;
+      for (int i = cs + 1; i < n; i++) {
+        _cmp++;
+        _acc++;
+        if (a[i] < item) pos++;
+      }
+      if (pos == cs) continue;
+      while (item == a[pos]) {
+        pos++;
+        _cmp++;
+        _acc++;
+      }
+      if (pos != cs) {
+        _swp++;
+        _acc += 2;
+        final tmp = a[pos];
+        a[pos] = item;
+        item = tmp;
+        yield _evt(a, swap: {cs, pos}, codeLine: 7);
+        await _delay();
+      }
+      while (pos != cs) {
+        pos = cs;
+        for (int i = cs + 1; i < n; i++) {
+          _cmp++;
+          _acc++;
+          if (a[i] < item) pos++;
+        }
+        while (item == a[pos]) {
+          pos++;
+          _cmp++;
+          _acc++;
+        }
+        if (item != a[pos]) {
+          _swp++;
+          _acc += 2;
+          final tmp = a[pos];
+          a[pos] = item;
+          item = tmp;
+          yield _evt(a, swap: {cs, pos}, codeLine: 7);
+          await _delay();
+        }
+      }
+    }
+  }
 }

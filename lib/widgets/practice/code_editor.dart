@@ -223,4 +223,420 @@ class _CodeEditorState extends State<CodeEditor> {
     final appState = Provider.of<AppState>(context, listen: false);
     _controller.currentThemeName = appState.codeTheme;
   }
+
+  void _handleTextChange() {
+    final newCount = _countLines(_controller.text);
+    if (newCount != _lineCount) {
+      setState(() {
+        _lineCount = newCount;
+      });
+    }
+    widget.onChanged(_controller.text);
+  }
+
+  int _countLines(String text) {
+    if (text.isEmpty) return 1;
+    return '\n'.allMatches(text).length + 1;
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_handleTextChange);
+    _controller.dispose();
+    _editorScroll.dispose();
+    _lineScroll.dispose();
+    super.dispose();
+  }
+
+  void _showThemePicker(BuildContext context, AppState appState) {
+    final activeTheme = appState.codeTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDark
+                    ? const Color(0xFF161B22).withOpacity(0.85)
+                    : Colors.white.withOpacity(0.85),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withOpacity(0.08)
+                      : Colors.black.withOpacity(0.08),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white30 : Colors.black26,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'Select Code Editor Theme',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: editorThemes.keys.map((themeName) {
+                        final theme = editorThemes[themeName]!;
+                        final isSelected = themeName == activeTheme;
+                        
+                        // Pick visual accent colors for the theme circle preview
+                        Color previewKeyword = const Color(0xFFFF79C6);
+                        Color previewString = const Color(0xFF8BE9FD);
+                        if (themeName == 'Monokai Sublime') {
+                          previewKeyword = const Color(0xFFF92672);
+                          previewString = const Color(0xFFA6E22E);
+                        } else if (themeName == 'One Dark') {
+                          previewKeyword = const Color(0xFFE06C75);
+                          previewString = const Color(0xFF98C379);
+                        } else if (themeName == 'GitHub Light') {
+                          previewKeyword = const Color(0xFFD73A49);
+                          previewString = const Color(0xFF032F62);
+                        } else if (themeName == 'Glassmorphic Neon') {
+                          previewKeyword = const Color(0xFFFF007F);
+                          previewString = const Color(0xFF00FFFF);
+                        }
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: isSelected
+                                ? (isDark
+                                    ? Colors.white.withOpacity(0.06)
+                                    : Colors.black.withOpacity(0.04))
+                                : Colors.transparent,
+                            border: Border.all(
+                              color: isSelected
+                                  ? (isDark
+                                      ? const Color(0xFFFF007F).withOpacity(0.3)
+                                      : Colors.grey[400]!)
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 4),
+                            onTap: () {
+                              appState.setCodeTheme(themeName);
+                              Navigator.pop(context);
+                            },
+                            leading: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: theme.bgColor == Colors.transparent || themeName == 'Glassmorphic Neon'
+                                    ? const Color(0xFF1F1F1F)
+                                    : theme.bgColor,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isDark
+                                      ? Colors.white.withOpacity(0.12)
+                                      : Colors.black.withOpacity(0.12),
+                                ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: previewKeyword,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 3),
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: previewString,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              themeName,
+                              style: TextStyle(
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? Icon(
+                                    Icons.check_circle,
+                                    color: isDark
+                                        ? const Color(0xFFFF007F)
+                                        : AppTheme.primaryTeal,
+                                    size: 20,
+                                  )
+                                : null,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    final activeThemeName = appState.codeTheme;
+    _controller.currentThemeName = activeThemeName;
+
+    final themeConfig = editorThemes[activeThemeName] ?? editorThemes['Dracula']!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bgColor = themeConfig.bgColor;
+    final lineNumColor = themeConfig.lineNumColor;
+    final textColor = themeConfig.textColor;
+    final borderColor = themeConfig.borderColor;
+    final gutterColor = themeConfig.gutterColor;
+    final cursorColor = themeConfig.cursorColor;
+    final headerColor = themeConfig.headerColor;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: activeThemeName == 'Glassmorphic Neon' ? 12.0 : 0.0,
+          sigmaY: activeThemeName == 'Glassmorphic Neon' ? 12.0 : 0.0,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: activeThemeName == 'Glassmorphic Neon'
+                  ? const Color(0xFFFF007F).withOpacity(0.3)
+                  : borderColor,
+              width: activeThemeName == 'Glassmorphic Neon' ? 1.5 : 1.0,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: activeThemeName == 'Glassmorphic Neon'
+                    ? const Color(0xFFFF007F).withOpacity(0.15)
+                    : Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+                blurRadius: activeThemeName == 'Glassmorphic Neon' ? 18 : 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: headerColor,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: activeThemeName == 'Glassmorphic Neon'
+                          ? const Color(0xFFFF007F).withOpacity(0.2)
+                          : borderColor,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Row(
+                      children: [
+                        _Dot(color: const Color(0xFFFF5F57)),
+                        const SizedBox(width: 6),
+                        _Dot(color: const Color(0xFFFFBD2E)),
+                        const SizedBox(width: 6),
+                        _Dot(color: const Color(0xFF27C93F)),
+                      ],
+                    ),
+                    const SizedBox(width: 14),
+                    Text(
+                      widget.language == 'cpp' ? 'main.cpp' : 'main.py',
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.palette_outlined, size: 18),
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      tooltip: 'Change Theme',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () => _showThemePicker(context, appState),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: (widget.language == 'cpp'
+                                ? const Color(0xFF00599C)
+                                : const Color(0xFF3776AB))
+                            .withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        widget.language == 'cpp' ? 'C++' : 'Python',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: widget.language == 'cpp'
+                              ? const Color(0xFF00599C)
+                              : const Color(0xFF3776AB),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 48,
+                      color: gutterColor,
+                      child: SingleChildScrollView(
+                        controller: _lineScroll,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 12, right: 8),
+                        child: Column(
+                          children: List.generate(
+                            _lineCount,
+                            (i) => SizedBox(
+                              height: 20,
+                              child: Text(
+                                '${i + 1}',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  fontFamily: 'monospace',
+                                  fontSize: 14,
+                                  color: lineNumColor,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 1,
+                      color: borderColor.withOpacity(0.5),
+                    ),
+                    Expanded(
+                      child: Focus(
+                        onKeyEvent: (node, event) {
+                          if (event.logicalKey == LogicalKeyboardKey.tab &&
+                              event is KeyDownEvent) {
+                            final text = _controller.text;
+                            final selection = _controller.selection;
+                            if (selection.start >= 0 && selection.end >= 0) {
+                              final newText = text.replaceRange(
+                                  selection.start, selection.end, '    ');
+                              _controller.value = TextEditingValue(
+                                text: newText,
+                                selection: TextSelection.collapsed(
+                                    offset: selection.start + 4),
+                              );
+                            }
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        },
+                        child: TextField(
+                          controller: _controller,
+                          scrollController: _editorScroll,
+                          maxLines: null,
+                          expands: true,
+                          textAlignVertical: TextAlignVertical.top,
+                          keyboardType: TextInputType.multiline,
+                          style: TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 14,
+                            color: textColor,
+                            height: 1.4,
+                          ),
+                          cursorColor: cursorColor,
+                          cursorWidth: 2,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(12),
+                            isDense: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Render a small colored dot used as a language indicator.
+class _Dot extends StatelessWidget {
+  final Color color;
+
+  const _Dot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 10,
+      height: 10,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
 }

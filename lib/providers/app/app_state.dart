@@ -103,4 +103,199 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> signUpWithEmail(
+      String email, String password, String name) async {
+    await _auth.signUpWithEmail(
+      email: email,
+      password: password,
+      displayName: name,
+    );
+  }
+
+  Future<void> signInWithGoogle() async {
+    await _auth.signInWithGoogle();
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _auth.resetPassword(email);
+  }
+
+  Future<void> _saveProgress() async {
+    await _localDb.saveUserProgress(_userProgress);
+    if (_auth.uid != null) {
+      try {
+        await _cloudDb.saveUserProgress(_auth.uid!, _userProgress);
+      } catch (_) {}
+    }
+  }
+
+  Future<void> _saveSettings() async {
+    await _localDb.saveSettings(_settings);
+    if (_auth.uid != null) {
+      try {
+        await _cloudDb.saveSettings(_auth.uid!, _settings);
+      } catch (_) {}
+    }
+  }
+
+  Future<int> submitExerciseRun(String exerciseId, int runXp, bool allPassed,
+      {String language = 'cpp', bool perfect = true}) async {
+    _userProgress.recordAttempt(exerciseId);
+    final awarded =
+        _userProgress.submitExerciseRun(exerciseId, runXp, allPassed);
+    _checkBadges(language: language, perfect: perfect);
+    await _saveProgress();
+    notifyListeners();
+    return awarded;
+  }
+
+  Future<int> completeChallenge(String challengeId, int xpReward,
+      {String? language, bool perfect = false}) async {
+    _userProgress.recordAttempt(challengeId);
+    final awarded = _userProgress.markChallengeDone(challengeId, xpReward);
+    _checkBadges(language: language, perfect: perfect);
+    await _saveProgress();
+    notifyListeners();
+    return awarded;
+  }
+
+  void _checkBadges({String? language, bool perfect = false}) {
+    final t = _userProgress.totalCompleted;
+    if (t >= 1) _userProgress.unlockBadge('first_stride', 'First Stride');
+    if (_userProgress.completedChallenges.isNotEmpty) {
+      _userProgress.unlockBadge('challenge_accepted', 'Challenge Accepted');
+    }
+    if (t >= 5) _userProgress.unlockBadge('five_stages', 'Getting Warmed Up');
+    if (t >= 10) _userProgress.unlockBadge('ten_down', 'Ten Down');
+    if (t >= 25) _userProgress.unlockBadge('twenty_five', 'Quarter Century');
+    final l = _userProgress.level;
+    if (l >= 5) _userProgress.unlockBadge('level_5', 'Dedicated Scholar');
+    if (l >= 10) _userProgress.unlockBadge('level_10', 'Master Scholar');
+    if (l >= 15) _userProgress.unlockBadge('level_15', 'Grandmaster');
+    final s = _userProgress.streak;
+    if (s >= 3) _userProgress.unlockBadge('streak_3', '3-Day Streak');
+    if (s >= 7) _userProgress.unlockBadge('streak_7', '7-Day Streak');
+    if (s >= 15) _userProgress.unlockBadge('streak_15', '15-Day Streak');
+    if (s >= 30) _userProgress.unlockBadge('streak_30', '30-Day Streak');
+    final hour = DateTime.now().hour;
+    if (hour >= 22 || hour < 4)
+      _userProgress.unlockBadge('night_owl', 'Night Owl');
+    if (hour >= 5 && hour < 8)
+      _userProgress.unlockBadge('early_bird', 'Early Bird');
+    final weekday = DateTime.now().weekday;
+    if (weekday == 6 || weekday == 7)
+      _userProgress.unlockBadge('weekend_warrior', 'Weekend Warrior');
+    if (perfect) _userProgress.unlockBadge('perfectionist', 'Perfectionist');
+    if (language == 'python') {
+      _userProgress.unlockBadge('python_novice', 'Python Novice');
+      if (t >= 5) _userProgress.unlockBadge('python_pro', 'Python Pro');
+    } else if (language == 'cpp') {
+      _userProgress.unlockBadge('cpp_novice', 'C++ Novice');
+      if (t >= 5) _userProgress.unlockBadge('cpp_pro', 'C++ Pro');
+    }
+
+    int completedChallengesCount = 0;
+    for (final challenge in _challenges) {
+      if (isChallengeCompleted(challenge.id)) {
+        completedChallengesCount++;
+      }
+    }
+    if (completedChallengesCount >= 5) {
+      _userProgress.unlockBadge('algo_master', 'Algorithm Master');
+    }
+
+    int completedTheoryCount = 0;
+    for (final course in _courses) {
+      for (final lesson in course.lessons) {
+        final hasContent = lesson.contentBlocks.isNotEmpty;
+        final hasCode = lesson.tests.isNotEmpty ||
+            lesson.initialCode.trim().isNotEmpty ||
+            (lesson.initialCodeCpp?.trim().isNotEmpty ?? false) ||
+            (lesson.initialCodePython?.trim().isNotEmpty ?? false);
+        if (hasContent && !hasCode && isExerciseCompleted(lesson.id)) {
+          completedTheoryCount++;
+        }
+      }
+    }
+    if (completedTheoryCount >= 3) {
+      _userProgress.unlockBadge('theory_titan', 'Theory Titan');
+    }
+
+    int perfectExercises = 0;
+    for (final id in _userProgress.completedExercises.keys) {
+      if ((_userProgress.exerciseAttempts[id] ?? 0) == 1) {
+        perfectExercises++;
+      }
+    }
+    for (final id in _userProgress.completedChallenges.keys) {
+      if ((_userProgress.exerciseAttempts[id] ?? 0) == 1) {
+        perfectExercises++;
+      }
+    }
+    if (perfectExercises >= 5) {
+      _userProgress.unlockBadge('perfect_five', 'Flawless Five');
+    }
+
+    if (_userProgress.earnedBadges.containsKey('cpp_novice') &&
+        _userProgress.earnedBadges.containsKey('python_novice')) {
+      _userProgress.unlockBadge('polyglot', 'Polyglot Coder');
+    }
+  }
+
+  bool isExerciseCompleted(String id) {
+    return _userProgress.completedExercises.containsKey(id);
+  }
+
+  bool isChallengeCompleted(String id) {
+    return _userProgress.completedChallenges.containsKey(id);
+  }
+
+  Future<void> toggleDarkMode() async {
+    _settings['dark_mode'] = !isDarkMode;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  Future<void> toggleMotion() async {
+    _settings['disable_motion'] = !motionDisabled;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  Future<void> setLanguage(String lang) async {
+    _settings['language'] = lang;
+    await _saveSettings();
+    _isLoading = true;
+    notifyListeners();
+    await refreshContent();
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> setCodeTheme(String theme) async {
+    _settings['code_theme'] = theme;
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  Future<void> updateDisplayName(String name) async {
+    _userProgress.displayName = name;
+    await _auth.currentUser?.updateDisplayName(name);
+    await _saveProgress();
+    notifyListeners();
+  }
+
+  void _syncJudgeConfig() {
+    JudgeConfig.setBaseUrl(judgeUrl);
+  }
+
+  Future<void> setJudgeUrl(String url) async {
+    _settings['judge_url'] = url;
+    _syncJudgeConfig();
+    await _saveSettings();
+    notifyListeners();
+  }
 }

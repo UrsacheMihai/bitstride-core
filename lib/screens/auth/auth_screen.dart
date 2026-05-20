@@ -213,4 +213,391 @@ class _AuthScreenState extends State<AuthScreen>
       }
     }
   }
+
+  String _parseError(String raw) {
+    if (raw.contains('user-not-found')) return 'No account with that email.';
+    if (raw.contains('wrong-password')) return 'Incorrect password.';
+    if (raw.contains('email-already-in-use'))
+      return 'Email already registered.';
+    if (raw.contains('weak-password'))
+      return 'Password must be at least 6 characters.';
+    if (raw.contains('invalid-email')) return 'Please enter a valid email.';
+    if (raw.contains('invalid-credential')) return 'Invalid email or password.';
+    if (raw.contains('network-request-failed'))
+      return 'No internet connection.';
+    return 'Something went wrong. Please try again.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isWide = screenWidth > 600;
+
+    return Scaffold(
+      body: Container(
+        decoration: AppTheme.meshBackground(isDark: isDark),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isWide ? screenWidth * 0.25 : 24,
+                    vertical: 24,
+                  ),
+                  child: FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(18),
+                              decoration: BoxDecoration(
+                                gradient: AppTheme.primaryGradient,
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        AppTheme.primaryCyan.withOpacity(0.35),
+                                    blurRadius: 32,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.code_rounded,
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Center(
+                            child: Text(
+                              l.appTitle,
+                              style: TextStyle(
+                                fontSize: 36,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: -1.2,
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF0D1420),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Center(
+                            child: Text(
+                              'Learn to code, one stride at a time',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: isDark
+                                    ? const Color(0xFF6B7A99)
+                                    : const Color(0xFF8B9AB0),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? AppTheme.darkCard
+                                  : AppTheme.lightCard,
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: isDark
+                                    ? AppTheme.darkBorder
+                                    : AppTheme.lightBorder,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                _ModeChip(
+                                  label: l.signIn,
+                                  isSelected: _isLogin,
+                                  onTap: () => setState(() {
+                                    _isLogin = true;
+                                    _errorMessage = null;
+                                  }),
+                                ),
+                                _ModeChip(
+                                  label: l.signUp,
+                                  isSelected: !_isLogin,
+                                  onTap: () => setState(() {
+                                    _isLogin = false;
+                                    _errorMessage = null;
+                                  }),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          RepaintBoundary(
+                            child: GlassCard(
+                              padding: const EdgeInsets.all(20),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    if (!_isLogin) ...[
+                                      TextFormField(
+                                        controller: _nameController,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Display Name',
+                                          prefixIcon: Icon(
+                                              Icons.person_outline_rounded),
+                                        ),
+                                        validator: (v) {
+                                          if (!_isLogin &&
+                                              (v == null || v.trim().isEmpty)) {
+                                            return 'Enter your name';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                      const SizedBox(height: 14),
+                                    ],
+                                    TextFormField(
+                                      controller: _emailController,
+                                      keyboardType: TextInputType.emailAddress,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Email',
+                                        prefixIcon: Icon(Icons.email_outlined),
+                                      ),
+                                      validator: (v) {
+                                        if (v == null || v.trim().isEmpty)
+                                          return 'Enter your email';
+                                        if (!v.contains('@'))
+                                          return 'Enter a valid email';
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 14),
+                                    TextFormField(
+                                      controller: _passwordController,
+                                      obscureText: _obscurePassword,
+                                      decoration: InputDecoration(
+                                        labelText: 'Password',
+                                        prefixIcon: const Icon(
+                                            Icons.lock_outline_rounded),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            _obscurePassword
+                                                ? Icons.visibility_off_outlined
+                                                : Icons.visibility_outlined,
+                                          ),
+                                          onPressed: () => setState(() =>
+                                              _obscurePassword =
+                                                  !_obscurePassword),
+                                        ),
+                                      ),
+                                      validator: (v) {
+                                        if (v == null || v.isEmpty)
+                                          return 'Enter a password';
+                                        if (v.length < 6)
+                                          return 'At least 6 characters';
+                                        return null;
+                                      },
+                                    ),
+                                    if (_isLogin)
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: TextButton(
+                                          onPressed: _forgotPassword,
+                                          style: TextButton.styleFrom(
+                                            padding:
+                                                const EdgeInsets.only(top: 8),
+                                            minimumSize: Size.zero,
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
+                                          ),
+                                          child: Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (_errorMessage != null) ...[
+                            const SizedBox(height: 14),
+                            Container(
+                              padding: const EdgeInsets.all(14),
+                              decoration: BoxDecoration(
+                                color: AppTheme.errorRed.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                    color: AppTheme.errorRed.withOpacity(0.35)),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.error_outline_rounded,
+                                      color: AppTheme.errorRed, size: 20),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      _errorMessage!,
+                                      style: const TextStyle(
+                                          color: AppTheme.errorRed,
+                                          fontSize: 13),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          const SizedBox(height: 20),
+                          GlassButton(
+                            label: _isLogin ? 'Sign In' : 'Create Account',
+                            isLoading: _isLoading,
+                            onPressed: _isLoading ? null : _submit,
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: 1,
+                                  color: isDark
+                                      ? AppTheme.darkBorder
+                                      : AppTheme.lightBorder,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 14),
+                                child: Text(
+                                  'or',
+                                  style: TextStyle(
+                                    color: isDark
+                                        ? const Color(0xFF4A5568)
+                                        : const Color(0xFF8B9AB0),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 1,
+                                  color: isDark
+                                      ? AppTheme.darkBorder
+                                      : AppTheme.lightBorder,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          if (kIsWeb ||
+                              defaultTargetPlatform == TargetPlatform.android ||
+                              defaultTargetPlatform == TargetPlatform.iOS)
+                            GlassButton(
+                              label: 'Continue with Google',
+                              isPrimary: false,
+                              icon: Icons.g_mobiledata,
+                              onPressed: _isLoading ? null : _signInWithGoogle,
+                            ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 16,
+                right: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppTheme.darkCard.withOpacity(0.6)
+                        : AppTheme.lightSurface.withOpacity(0.6),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color:
+                          isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+                    ),
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      isDark
+                          ? Icons.light_mode_rounded
+                          : Icons.dark_mode_rounded,
+                      color:
+                          isDark ? AppTheme.primaryCyan : AppTheme.accentPurple,
+                    ),
+                    onPressed: () {
+                      context.read<AppState>().toggleDarkMode();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Provide interface component for Mode Chip.
+class _ModeChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ModeChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            gradient: isSelected ? AppTheme.primaryGradient : null,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: isSelected
+                    ? Colors.white
+                    : (isDark
+                        ? const Color(0xFF6B7A99)
+                        : const Color(0xFF8B9AB0)),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

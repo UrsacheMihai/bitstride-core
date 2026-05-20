@@ -408,4 +408,1053 @@ class _LearnScreenState extends State<LearnScreen>
   }
 
   Widget _buildListView(Course selectedCourse, List<bool> completionStatuses,
+      int activeIndex, Color langColor, bool isDark, bool allCompleted) {
+    final appState = context.watch<AppState>();
+    final completed = completionStatuses.where((s) => s).length;
+    final total = selectedCourse.lessons.length;
+
+    return RefreshIndicator(
+      onRefresh: appState.refreshContent,
+      color: Theme.of(context).colorScheme.primary,
+      child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        itemCount: selectedCourse.lessons.length + 1,
+        itemBuilder: (ctx, index) {
+          if (index == 0) {
+            final progress = total == 0 ? 0.0 : completed / total;
+            return Container(
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    langColor.withOpacity(0.12),
+                    langColor.withOpacity(0.04)
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: langColor.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: langColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${(progress * 100).round()}%',
+                        style: TextStyle(
+                          color: langColor,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$completed / $total lessons completed',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color:
+                                isDark ? Colors.white : const Color(0xFF0D1420),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: langColor.withOpacity(0.15),
+                            valueColor: AlwaysStoppedAnimation(langColor),
+                            minHeight: 6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final i = index - 1;
+          final lesson = selectedCourse.lessons[i];
+          final isDone = completionStatuses[i];
+          final isActive = i == activeIndex;
+          final isLocked = !allCompleted && i > activeIndex;
+          final hasContent = lesson.contentBlocks.isNotEmpty;
+          final hasCode = lesson.tests.isNotEmpty ||
+              lesson.initialCode.trim().isNotEmpty ||
+              (lesson.initialCodeCpp?.trim().isNotEmpty ?? false) ||
+              (lesson.initialCodePython?.trim().isNotEmpty ?? false);
+          // Classify lesson as theory when it has content but no code exercises.
+          final isTheory = !hasCode && hasContent;
+          final isMixed = hasContent && hasCode;
+
+          return AnimatedListItem(
+            index: i,
+            child: Opacity(
+              opacity: isLocked ? 0.5 : 1.0,
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  color: isDark ? AppTheme.darkCard : AppTheme.lightSurface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isActive
+                        ? langColor.withOpacity(0.5)
+                        : (isDone
+                            ? AppTheme.successGreen.withOpacity(0.3)
+                            : (isDark
+                                ? AppTheme.darkBorder
+                                : AppTheme.lightBorder)),
+                    width: isActive ? 1.5 : 1.0,
+                  ),
+                  boxShadow: [
+                    if (isActive)
+                      BoxShadow(
+                        color: langColor.withOpacity(0.12),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(16),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: isLocked
+                        ? null
+                        : () async {
+                            // Await result from lesson and show overlay if lesson was completed.
+                            final result = await Navigator.push<LessonCompletionResult>(
+                              context,
+                              SlidePageRoute(
+                                page: LessonScreen(
+                                  exercise: lesson,
+                                  language: selectedCourse.language,
+                                  isChallenge: false,
+                                ),
+                              ),
+                            );
+                            if (result != null && mounted) {
+                              setState(() => _activeCompletionResult = result);
+                            }
+                          },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient:
+                                  isDone ? AppTheme.successGradient : null,
+                              color: isDone
+                                  ? null
+                                  : (isActive
+                                      ? langColor.withOpacity(0.12)
+                                      : (isDark
+                                          ? AppTheme.darkBorder.withOpacity(0.5)
+                                          : Colors.grey.withOpacity(0.08))),
+                              border: Border.all(
+                                color: isDone
+                                    ? AppTheme.successGreen
+                                    : (isActive
+                                        ? langColor
+                                        : Colors.transparent),
+                                width: isActive ? 2 : 0,
+                              ),
+                            ),
+                            child: Center(
+                              child: isDone
+                                  ? const Icon(Icons.check_rounded,
+                                      color: Colors.white, size: 20)
+                                  : isLocked
+                                      ? Icon(Icons.lock_rounded,
+                                          size: 16,
+                                          color: isDark
+                                              ? Colors.white30
+                                              : Colors.grey)
+                                      : Text(
+                                          '${i + 1}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 15,
+                                            color: isActive
+                                                ? langColor
+                                                : (isDark
+                                                    ? Colors.white54
+                                                    : Colors.grey[600]),
+                                          ),
+                                        ),
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lesson.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: isDark
+                                        ? Colors.white
+                                        : const Color(0xFF0D1420),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    _LessonTypePill(
+                                      isTheory: isTheory,
+                                      isMixed: isMixed,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      isMixed
+                                          ? '25 XP'
+                                          : (isTheory ? '10 XP' : '20 XP'),
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: isDark
+                                            ? Colors.white38
+                                            : Colors.grey[500],
+                                      ),
+                                    ),
+                                    if (lesson.description.isNotEmpty) ...[
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          lesson.description,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: isDark
+                                                ? Colors.white30
+                                                : Colors.grey[400],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (!isLocked)
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              color: isDark ? Colors.white24 : Colors.grey[400],
+                              size: 22,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// Course definition and initialization
+class _CourseBanner extends StatelessWidget {
+  final Course course;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CourseBanner({
+    required this.course,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  Color get _langColor => course.language == 'cpp'
+      ? const Color(0xFF00599C)
+      : const Color(0xFF3776AB);
+
+  IconData get _langIcon =>
+      course.language == 'cpp' ? Icons.memory : Icons.data_object;
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    final lessons = course.lessons;
+    final completed =
+        lessons.where((l) => appState.isExerciseCompleted(l.id)).length;
+    final total = lessons.length;
+    final progress = total == 0 ? 0.0 : completed / total;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? _langColor
+              : (isDark ? AppTheme.darkCard : AppTheme.lightSurface),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: isSelected
+                ? _langColor
+                : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder),
+            width: isSelected ? 0 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: _langColor.withOpacity(0.35),
+                    blurRadius: 18,
+                    offset: const Offset(0, 5),
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.15 : 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? Colors.white.withOpacity(0.2)
+                        : _langColor.withOpacity(0.10),
+                    borderRadius: BorderRadius.circular(9),
+                  ),
+                  child: Icon(
+                    _langIcon,
+                    color: isSelected ? Colors.white : _langColor,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    course.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark ? Colors.white70 : const Color(0xFF0D1420)),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: isSelected
+                          ? Colors.white.withOpacity(0.2)
+                          : (isDark
+                              ? AppTheme.darkBorder
+                              : AppTheme.lightBorder),
+                      valueColor: AlwaysStoppedAnimation(
+                          isSelected ? Colors.white : _langColor),
+                      minHeight: 4,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '$completed/$total',
+                  style: TextStyle(
+                    color: isSelected
+                        ? Colors.white
+                        : (isDark ? Colors.grey[500] : Colors.grey[600]),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Render a single lesson node on the learning path map.
+class _MapNode extends StatefulWidget {
+  final Exercise lesson;
+  final int index;
+  final bool isDone;
+  final bool isActive;
+  final bool isLocked;
+  final Color langColor;
+  final VoidCallback onTap;
+
+  const _MapNode({
+    super.key,
+    required this.lesson,
+    required this.index,
+    required this.isDone,
+    required this.isActive,
+    required this.isLocked,
+    required this.langColor,
+    required this.onTap,
+  });
+
+  @override
+  State<_MapNode> createState() => _MapNodeState();
+}
+
+// Manage state and provide providers for Map Node State.
+class _MapNodeState extends State<_MapNode> with TickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late AnimationController _entranceCtrl;
+  late AnimationController _tapCtrl;
+  late Animation<double> _entranceFade;
+  late Animation<Offset> _entranceSlide;
+  late Animation<double> _tapScale;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+    if (widget.isActive) _pulseController.repeat();
+
+    _entranceCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 480),
+    );
+    _entranceFade = CurvedAnimation(
+      parent: _entranceCtrl,
+      curve: Curves.easeOut,
+    );
+    _entranceSlide = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _entranceCtrl,
+      curve: Curves.easeOutCubic,
+    ));
+
+    Future.delayed(Duration(milliseconds: widget.index * 80), () {
+      if (mounted) _entranceCtrl.forward();
+    });
+
+    _tapCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 320),
+    );
+    _tapScale = TweenSequence([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.18)
+            .chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.18, end: 1.0)
+            .chain(CurveTween(curve: Curves.elasticIn)),
+        weight: 60,
+      ),
+    ]).animate(_tapCtrl);
+  }
+
+  @override
+  void didUpdateWidget(covariant _MapNode oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive && !_pulseController.isAnimating) {
+      _pulseController.repeat();
+    } else if (!widget.isActive && _pulseController.isAnimating) {
+      _pulseController.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _entranceCtrl.dispose();
+    _tapCtrl.dispose();
+    super.dispose();
+  }
+
+  void _handleTap() {
+    if (widget.isLocked) return;
+    _tapCtrl.forward(from: 0.0).then((_) => widget.onTap());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return FadeTransition(
+      opacity: _entranceFade,
+      child: SlideTransition(
+        position: _entranceSlide,
+        child: AnimatedBuilder(
+          animation: _tapScale,
+          builder: (context, child) => Transform.scale(
+            scale: _tapScale.value,
+            child: child,
+          ),
+          child: MouseRegion(
+            onEnter: (_) {
+              if (!widget.isLocked) setState(() => _isHovered = true);
+            },
+            onExit: (_) => setState(() => _isHovered = false),
+            cursor: widget.isLocked
+                ? SystemMouseCursors.basic
+                : SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: _handleTap,
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  if (widget.isActive)
+                    AnimatedBuilder(
+                      animation: _pulseController,
+                      builder: (context, child) {
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 76 + 32 * _pulseController.value,
+                              height: 76 + 32 * _pulseController.value,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: widget.langColor.withOpacity(
+                                      1.0 - _pulseController.value),
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 76 + 16 * _pulseController.value,
+                              height: 76 + 16 * _pulseController.value,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: widget.langColor.withOpacity(
+                                    0.15 * (1.0 - _pulseController.value)),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeOutBack,
+                    width: 76,
+                    height: 76,
+                    transformAlignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..scale(_isHovered ? 1.08 : 1.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: widget.isDone
+                          ? AppTheme.successGradient
+                          : (widget.isActive
+                              ? LinearGradient(
+                                  colors: [
+                                    widget.langColor,
+                                    widget.langColor.withOpacity(0.8)
+                                  ],
+                                )
+                              : null),
+                      color: widget.isLocked
+                          ? (isDark
+                              ? AppTheme.darkBorder
+                              : AppTheme.lightBorder)
+                          : (widget.isDone || widget.isActive
+                              ? null
+                              : widget.langColor.withOpacity(0.12)),
+                      border: Border.all(
+                        color: widget.isDone
+                            ? AppTheme.successGreen
+                            : (widget.isActive
+                                ? Colors.white
+                                : (widget.isLocked
+                                    ? (isDark
+                                        ? Colors.white10
+                                        : Colors.black.withOpacity(0.10))
+                                    : widget.langColor.withOpacity(0.4))),
+                        width: widget.isActive ? 3 : 2,
+                      ),
+                      boxShadow: _isHovered
+                          ? [
+                              BoxShadow(
+                                color: widget.isDone
+                                    ? AppTheme.successGreen.withOpacity(0.6)
+                                    : widget.langColor.withOpacity(0.6),
+                                blurRadius: 24,
+                                spreadRadius: 2,
+                              ),
+                            ]
+                          : (widget.isActive
+                              ? [
+                                  BoxShadow(
+                                    color: widget.langColor.withOpacity(0.5),
+                                    blurRadius: 20,
+                                    spreadRadius: 2,
+                                  ),
+                                ]
+                              : (widget.isDone
+                                  ? [
+                                      BoxShadow(
+                                        color: AppTheme.successGreen
+                                            .withOpacity(0.3),
+                                        blurRadius: 12,
+                                      ),
+                                    ]
+                                  : [])),
+                    ),
+                    child: Center(
+                      child: widget.isDone
+                          ? const Icon(
+                              Icons.check_rounded,
+                              color: Colors.white,
+                              size: 32,
+                            )
+                          : widget.isLocked
+                              ? Icon(
+                                  Icons.lock_rounded,
+                                  color: isDark
+                                      ? Colors.white30
+                                      : Colors.black.withOpacity(0.30),
+                                  size: 26,
+                                )
+                              : Text(
+                                  '${widget.index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w900,
+                                    color: widget.isActive
+                                        ? Colors.white
+                                        : widget.langColor,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                    ),
+                  ),
+                  if (widget.isActive) ...[
+                    Positioned(
+                      left: 13,
+                      top: -46,
+                      child: const _BouncingMascot(size: 50),
+                    ),
+                    Positioned(
+                      top: -82,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutBack,
+                          transformAlignment: Alignment.bottomCenter,
+                          transform: Matrix4.identity()
+                            ..scale(_isHovered ? 1.1 : 1.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppTheme.accentPink,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppTheme.accentPink.withOpacity(0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Text(
+                            'START',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Provide interface component for Map Title Card.
+class _MapTitleCard extends StatefulWidget {
+  final Exercise lesson;
+  final int index;
+  final String language;
+  final Color langColor;
+  final bool isDone;
+  final bool isActive;
+  final bool isLocked;
+  final VoidCallback onTap;
+
+  const _MapTitleCard({
+    super.key,
+    required this.lesson,
+    required this.index,
+    required this.language,
+    required this.langColor,
+    required this.isDone,
+    required this.isActive,
+    required this.isLocked,
+    required this.onTap,
+  });
+
+  @override
+  State<_MapTitleCard> createState() => _MapTitleCardState();
+}
+
+// Manage state and provide providers for Map Title Card State.
+class _MapTitleCardState extends State<_MapTitleCard> {
+  bool _isHovered = false;
+
+  bool get _hasContent => widget.lesson.contentBlocks.isNotEmpty;
+
+  bool get _hasCode =>
+      widget.lesson.tests.isNotEmpty ||
+      widget.lesson.initialCode.trim().isNotEmpty ||
+      (widget.lesson.initialCodeCpp?.trim().isNotEmpty ?? false) ||
+      (widget.lesson.initialCodePython?.trim().isNotEmpty ?? false);
+
+  // Classify lesson as theory when it has content but no code exercises.
+  bool get _isTheory => !_hasCode && _hasContent;
+
+  bool get _isMixed => _hasContent && _hasCode;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l = AppLocalizations.of(context)!;
+
+    final Color activeBorderColor = widget.isDone
+        ? AppTheme.successGreen
+        : (widget.isActive
+            ? widget.langColor
+            : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder));
+
+    return MouseRegion(
+      onEnter: (_) {
+        if (!widget.isLocked) {
+          setState(() => _isHovered = true);
+        }
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+      },
+      cursor:
+          widget.isLocked ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.isLocked ? null : widget.onTap,
+        child: Opacity(
+          opacity: widget.isLocked ? 0.5 : 1.0,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 240),
+            curve: Curves.easeOutCubic,
+            transform: Matrix4.identity()
+              ..translate(0.0, _isHovered ? -3.0 : 0.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark ? AppTheme.darkCard : AppTheme.lightSurface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: _isHovered
+                    ? activeBorderColor
+                    : (widget.isDone
+                        ? AppTheme.successGreen.withOpacity(0.35)
+                        : (widget.isActive
+                            ? widget.langColor.withOpacity(0.5)
+                            : (isDark
+                                ? AppTheme.darkBorder
+                                : AppTheme.lightBorder))),
+                width: (widget.isActive || _isHovered) ? 1.5 : 1.0,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: _isHovered
+                      ? activeBorderColor.withOpacity(0.2)
+                      : Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+                  blurRadius: _isHovered ? 12 : (widget.isActive ? 10 : 6),
+                  offset: Offset(0, _isHovered ? 4 : 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.lesson.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    color: isDark ? Colors.white : const Color(0xFF0D1420),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    _MetaChip(
+                      label: _isMixed
+                          ? 'Mixed'
+                          : (_isTheory ? l.theoryBadge : l.codeBadge),
+                      color: _isMixed
+                          ? AppTheme.xpGold
+                          : (_isTheory
+                              ? AppTheme.accentPurple
+                              : AppTheme.primaryCyan),
+                      icon: _isMixed
+                          ? Icons.auto_awesome_rounded
+                          : (_isTheory
+                              ? Icons.menu_book_rounded
+                              : Icons.code_rounded),
+                    ),
+                    Text(
+                      _isMixed ? '25 XP' : (_isTheory ? '10 XP' : '20 XP'),
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        color: isDark
+                            ? Colors.white.withOpacity(0.50)
+                            : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Provide interface component for Meta Chip.
+class _MetaChip extends StatelessWidget {
+  final String label;
+  final Color color;
+  final IconData? icon;
+
+  const _MetaChip({required this.label, required this.color, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.10),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 10, color: color),
+            const SizedBox(width: 3),
+          ],
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Provide interface component for Lesson Type Pill.
+class _LessonTypePill extends StatelessWidget {
+  final bool isTheory;
+  final bool isMixed;
+
+  const _LessonTypePill({required this.isTheory, required this.isMixed});
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = isMixed
+        ? AppTheme.xpGold
+        : (isTheory ? AppTheme.accentPurple : AppTheme.primaryCyan);
+    final IconData icon = isMixed
+        ? Icons.auto_awesome_rounded
+        : (isTheory ? Icons.menu_book_rounded : Icons.code_rounded);
+    final String label = isMixed ? 'Mixed' : (isTheory ? 'Theory' : 'Code');
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: color),
+          const SizedBox(width: 3),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 10, fontWeight: FontWeight.w700, color: color)),
+        ],
+      ),
+    );
+  }
+}
+
+// Animate the mascot widget with a looping vertical bounce.
+class _BouncingMascot extends StatefulWidget {
+  final double size;
+
+  const _BouncingMascot({super.key, this.size = 50});
+
+  @override
+  State<_BouncingMascot> createState() => _BouncingMascotState();
+}
+
+// Manage state and provide providers for Bouncing Mascot State.
+class _BouncingMascotState extends State<_BouncingMascot>
+    with TickerProviderStateMixin {
+  late AnimationController _bounceCtrl;
+  late AnimationController _swayCtrl;
+  late AnimationController _glowCtrl;
+  late Animation<double> _bounceAnim;
+  late Animation<double> _swayAnim;
+  late Animation<double> _glowAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200))
+      ..repeat(reverse: true);
+    _bounceAnim = Tween<double>(begin: 0.0, end: -10.0).animate(
+        CurvedAnimation(parent: _bounceCtrl, curve: Curves.easeInOutSine));
+
+    _swayCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2400))
+      ..repeat(reverse: true);
+    _swayAnim = Tween<double>(begin: -3.0, end: 3.0).animate(
+        CurvedAnimation(parent: _swayCtrl, curve: Curves.easeInOutSine));
+
+    _glowCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1800))
+      ..repeat(reverse: true);
+    _glowAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _glowCtrl, curve: Curves.easeInOutSine));
+  }
+
+  @override
+  void dispose() {
+    _bounceCtrl.dispose();
+    _swayCtrl.dispose();
+    _glowCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final motionDisabled = context.watch<AppState>().motionDisabled;
+    final Widget mascot = MascotDisplay(
+      gifAsset: 'happy-dance-138e71c9-360.webm',
+      size: widget.size,
+    );
+
+    if (motionDisabled) return mascot;
+
+    return AnimatedBuilder(
+      animation: Listenable.merge([_bounceAnim, _swayAnim, _glowAnim]),
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(_swayAnim.value, _bounceAnim.value),
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryCyan
+                            .withOpacity(0.08 + _glowAnim.value * 0.14),
+                        blurRadius: 16 + _glowAnim.value * 12,
+                        spreadRadius: 2 + _glowAnim.value * 4,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              child!,
+            ],
+          ),
+        );
+      },
+      child: mascot,
+    );
+  }
 }

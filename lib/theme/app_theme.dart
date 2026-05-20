@@ -108,4 +108,220 @@ class AppTheme {
     );
   }
 
+  static BoxDecoration glassDialogDecoration({required bool isDark}) {
+    return BoxDecoration(
+      color: isDark ? const Color(0xFF1C2438) : Colors.white,
+      borderRadius: BorderRadius.circular(28),
+      border: Border.all(
+        color: isDark ? const Color(0xFF2A3550) : const Color(0xFFDDE4F0),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(isDark ? 0.55 : 0.12),
+          blurRadius: 48,
+          offset: const Offset(0, 20),
+        ),
+      ],
+    );
+  }
+
+  static ThemeData lightTheme() {
+    final textTheme = GoogleFonts.interTextTheme(ThemeData.light().textTheme);
+    return ThemeData(
+      brightness: Brightness.light,
+      primaryColor: primaryTeal,
+      scaffoldBackgroundColor: lightBg,
+      textTheme: textTheme,
+      colorScheme: const ColorScheme.light(
+        primary: primaryTeal,
+        secondary: accentPurple,
+        surface: lightSurface,
+        error: errorRed,
+        tertiary: primaryCyan,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: lightSurface,
+        foregroundColor: const Color(0xFF0D1420),
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: false,
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: const Color(0xFF0D1420),
+          letterSpacing: -0.4,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: lightSurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: lightBorder),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryTeal,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: lightBorder, width: 1.5),
+          foregroundColor: primaryTeal,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: lightCard,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: lightBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: primaryTeal, width: 2),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+        hintStyle: const TextStyle(color: Color(0xFFABB8CC)),
+        labelStyle: const TextStyle(color: Color(0xFF7A8FAF)),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: lightSurface,
+        selectedItemColor: primaryTeal,
+        unselectedItemColor: Color(0xFF8B9AB0),
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+      dividerColor: lightBorder,
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected) ? primaryTeal : Colors.grey),
+        trackColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected)
+                ? primaryTeal.withOpacity(0.3)
+                : Colors.grey.withOpacity(0.2)),
+      ),
+    );
+  }
+
+  static ThemeData darkTheme() {
+    final textTheme = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: primaryCyan,
+      scaffoldBackgroundColor: darkBg,
+      textTheme: textTheme,
+      colorScheme: const ColorScheme.dark(
+        primary: primaryCyan,
+        secondary: accentPurple,
+        surface: darkSurface,
+        error: errorRed,
+        tertiary: primaryTeal,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: darkSurface,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        centerTitle: false,
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: Colors.white,
+          letterSpacing: -0.4,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        color: darkCard,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: darkBorder),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryCyan,
+          foregroundColor: darkBg,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          textStyle: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          side: const BorderSide(color: darkBorder, width: 1.5),
+          foregroundColor: primaryCyan,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: darkCard,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: darkBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: primaryCyan, width: 2),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+        hintStyle: const TextStyle(color: Color(0xFF4A5568)),
+        labelStyle: const TextStyle(color: Color(0xFF6B7A99)),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: darkSurface,
+        selectedItemColor: primaryCyan,
+        unselectedItemColor: Color(0xFF4A5568),
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+      ),
+      dividerColor: darkBorder,
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected) ? primaryCyan : Colors.grey),
+        trackColor: WidgetStateProperty.resolveWith((s) =>
+            s.contains(WidgetState.selected)
+                ? primaryCyan.withOpacity(0.3)
+                : Colors.grey.withOpacity(0.15)),
+      ),
+    );
+  }
 }

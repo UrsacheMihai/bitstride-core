@@ -90,4 +90,199 @@ class BadgesScreen extends StatelessWidget {
   ];
 
   @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<AppState>();
+    final earned = appState.userProgress.earnedBadges;
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final earnedIds = earned.keys.toSet();
+    final crossCount = MediaQuery.of(context).size.width > 600 ? 4 : 2;
+
+    return Scaffold(
+      appBar: GlassAppBar(
+        title: Text(l10n.badges),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Center(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppTheme.xpGold.withOpacity(isDark ? 0.14 : 0.10),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.xpGold.withOpacity(0.35)),
+                ),
+                child: Text(
+                  '${earnedIds.length}/${_allBadges.length}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                    color: AppTheme.xpGold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: AppTheme.meshBackground(isDark: isDark),
+        child: GridView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossCount,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: _allBadges.length,
+          itemBuilder: (ctx, i) {
+            return AnimatedListItem(
+              index: i,
+              child: _BadgeCard(
+                badge: _allBadges[i],
+                unlocked: earnedIds.contains(_allBadges[i].id),
+                isDark: isDark,
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// Provide interface component for Badge Def.
+class _BadgeDef {
+  final String id;
+  final String name;
+  final String description;
+  final IconData icon;
+  final List<Color> gradient;
+
+  const _BadgeDef(
+      this.id, this.name, this.description, this.icon, this.gradient);
+}
+
+// Provide interface component for Badge Card.
+class _BadgeCard extends StatelessWidget {
+  final _BadgeDef badge;
+  final bool unlocked;
+  final bool isDark;
+
+  const _BadgeCard({
+    required this.badge,
+    required this.unlocked,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark
+            ? (unlocked ? AppTheme.darkCard2 : AppTheme.darkCard)
+            : (unlocked ? AppTheme.lightSurface : AppTheme.lightCard),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: unlocked
+              ? badge.gradient[0].withOpacity(0.45)
+              : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder),
+          width: unlocked ? 1.5 : 1.0,
+        ),
+        boxShadow: unlocked
+            ? [
+                BoxShadow(
+                  color: badge.gradient[0].withOpacity(0.20),
+                  blurRadius: 20,
+                  offset: const Offset(0, 6),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.20 : 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                gradient: unlocked
+                    ? LinearGradient(
+                        colors: badge.gradient,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
+                color: unlocked
+                    ? null
+                    : (isDark
+                        ? Colors.white.withOpacity(0.05)
+                        : Colors.grey.withOpacity(0.08)),
+                shape: BoxShape.circle,
+                boxShadow: unlocked
+                    ? [
+                        BoxShadow(
+                          color: badge.gradient[0].withOpacity(0.4),
+                          blurRadius: 16,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                    : [],
+              ),
+              child: Icon(
+                badge.icon,
+                size: 26,
+                color: unlocked
+                    ? Colors.white
+                    : (isDark ? Colors.grey[700] : Colors.grey[400]),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              badge.name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+                color: unlocked
+                    ? (isDark ? Colors.white : const Color(0xFF0D1420))
+                    : (isDark ? Colors.grey[600] : Colors.grey[500]),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              badge.description,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? Colors.grey[600] : Colors.grey[500],
+              ),
+            ),
+            if (!unlocked)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Icon(
+                  Icons.lock_outline_rounded,
+                  size: 16,
+                  color: isDark ? Colors.grey[700] : Colors.grey[400],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }
