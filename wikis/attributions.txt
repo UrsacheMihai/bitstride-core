@@ -1,0 +1,58 @@
+========================================================================
+SPECIFICATIONS REGARDING THIRD-PARTY COMPONENTS (ATTRIBUTIONS SHEET)
+========================================================================
+
+Project: BitStride (BitStride Core & BitStride Studio)
+Author/Authors: Ursache Mihai
+
+The following components used within the BitStride project were NOT created
+directly by the author and represent open-source resources, third-party libraries,
+or assets, integrated according to their respective licenses:
+
+1. SOURCE CODE COMPONENTS AND BINDINGS (SDKS AND DEPENDENCIES):
+------------------------------------------------------------------------
+* Core SDK & Language: Flutter SDK and Dart SDK (developed by Google and 
+  the community under the BSD-3-Clause license).
+* Database & User Authentication: Firebase client libraries for Flutter 
+  (firebase_core, firebase_auth, cloud_firestore, google_sign_in) - developed 
+  by Google Inc. under the BSD license.
+* Remote Compilation Sandbox (Backend Compiler): The open-source Piston API 
+  (EngineersMan/piston) engine, licensed under the MIT license (executes 
+  user code in isolated Docker environments).
+* Dynamic Translation Service: The 'translator' package (wrapper for Google 
+  Translate) and MyMemory Translation API proxy (mymemory.translated.net).
+* Code Editor Syntax Highlighting: The 'flutter_highlight' package (community-
+  driven, based on highlight.js), used to highlight syntax for C++ and Python.
+* Settings Local Storage: The 'shared_preferences' package (developed by 
+  the Flutter core team).
+* State Management: The 'provider' package (created by Remi Rousselet, 
+  under the MIT license).
+* Archive Management (Studio): The 'archive' package (used for exporting and 
+  importing zip challenge files) developed by the community.
+* File Picker Dialogs: The 'file_picker' package created by Miguel Ruivo.
+
+2. MEDIA AND GRAPHIC ELEMENTS (IMAGES AND ICONS):
+------------------------------------------------------------------------
+* System Icons: Natively integrated 'cupertino_icons' (Apple style icons) 
+  and 'Material Design Icons' provided by Flutter SDK (Google, licensed 
+  under Apache License 2.0).
+* Mascot & Decorative Layouts: Mascot illustrations in `assets/mascot/` 
+  were adapted from free open-source vector sets (freepik.com / unDraw), 
+  under free personal and commercial licenses with/without attribution.
+
+3. TYPOGRAPHY AND FONTS:
+------------------------------------------------------------------------
+* The 'google_fonts' package and the font files (e.g. Inter, Outfit, Fira Code) 
+  are dynamically loaded from Google Fonts servers, licensed under the 
+  Open Font License (OFL).
+
+4. SYLLABUS & LESSON CURRICULA:
+------------------------------------------------------------------------
+* Basic C++ and Python curricula (represented by JSON resources in `assets/`) 
+  comply with high school computer science textbooks approved by the 
+  Romanian Ministry of Education, python.org docs, and cppreference.com.
+
+All other components, including layout interface designs (UI), provider states 
+(AppState & StudioState), custom canvas sorting visualizer algorithms, test case 
+parsing systems, compiler test runners, code comparison inspector dashboards, 
+and lesson publishing pipelines were designed and written entirely by the author.

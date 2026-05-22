@@ -1,0 +1,65 @@
+========================================================================
+SPECIFICAȚII PRIVIND COMPONENTELE NEREALIZATE DE AUTOR (ATRIBUIRI TERȚI)
+========================================================================
+
+Proiect: BitStride (BitStride Core & BitStride Studio)
+Autor/Autori lucrare: Ursache Mihai
+
+Următoarele componente utilizate în cadrul proiectului BitStride NU au fost
+realizate direct de către autorul lucrării și reprezintă resurse open-source,
+biblioteci de cod terțe sau bunuri proprietate publică, integrate în proiect 
+conform licențelor aferente:
+
+1. COMPONENTE DE COD SURSĂ ȘI BINDINGS (SDK-URI ȘI DEPENDINȚE):
+------------------------------------------------------------------------
+* SDK-ul Core și Limbajul: Flutter SDK și Dart SDK (dezvoltate de Google 
+  și comunitate sub licență BSD-3-Clause).
+* Baza de Date și Managementul Utilizatorilor: Biblioteca client Firebase 
+  Suite pentru Flutter (firebase_core, firebase_auth, cloud_firestore, 
+  google_sign_in) - realizate de Google Inc. sub licență BSD.
+* Motorul de Compilare la Distanță (Backend Compiler): Proiectul open-source 
+  Piston API (EngineersMan/piston), licențiat sub licență MIT (execută 
+  codul în medii de tip Docker izolate).
+* Traducere Automată: Pachetul 'translator' (bazat pe API-ul Google Translate) 
+  și serviciul public MyMemory Translate API (mymemory.translated.net).
+* Evidențierea Sintaxei în Editorul de Cod: Pachetul 'flutter_highlight' 
+  (dezvoltat de comunitatea open-source, bazat pe motorul highlight.js), 
+  folosit pentru marcarea cuvintelor cheie în C++ și Python.
+* Persistența Setărilor Locale: Pachetul 'shared_preferences' (dezvoltat de 
+  echipa oficială Flutter).
+* Managementul Stării (State Management): Pachetul 'provider' (creat de Remi 
+  Rousselet sub licență MIT).
+* Managementul Arhivelor (Studio): Pachetul 'archive' (pentru export/import 
+  provocări de cod) realizat de comunitate.
+* Selectorul de Fișiere: Pachetul 'file_picker' creat de Miguel Ruivo.
+
+2. ELEMENTE GRAFICE ȘI VIZUALE (IMAGINI ȘI ICONS):
+------------------------------------------------------------------------
+* Pictogramele Sistem: Pachetul nativ 'cupertino_icons' (Apple style icons) 
+  și setul de pictograme 'Material Design Icons' furnizat nativ de Flutter SDK 
+  (Google, licențiate sub Apache License 2.0).
+* Mascotă și Imagini Decorative: Ilustrațiile de tip mascotă prezente în 
+  directorul `assets/mascot/` sunt adaptate din seturi grafice open-source de 
+  pe platforme de ilustrație vectorială gratuită (freepik.com / unDraw), sub 
+  licențe libere de uz personal și comercial cu/fără atribuire.
+
+3. TIPOGRAFIE ȘI FONTS:
+------------------------------------------------------------------------
+* Pachetul 'google_fonts' și fonturile utilizate în interfață (de exemplu: 
+  Inter, Outfit, Fira Code) sunt descărcate dinamic din serverele Google Fonts, 
+  fiind create de designeri independenți și publicate sub licențe Open Font 
+  License (OFL).
+
+4. CONȚINUT DE CURRICULĂ ȘI LECȚII:
+------------------------------------------------------------------------
+* Structura de lecții teoretice de bază pentru C++ și Python (fișierele json 
+  din directorul `assets/` în Studio și Core) sunt structurate în conformitate 
+  cu manualele școlare aprobate de Ministerul Educației din România pentru 
+  clasele IX-XI, precum și documentația oficială python.org și cppreference.com.
+
+Toate celelalte elemente, incluzând design-ul interfeței grafice (UI), logica de 
+stare a aplicației (AppState & StudioState), implementarea vizualizatorului de 
+algoritmi de sortare, parser-ul de test-case-uri, logica de evaluare a codului pe 
+baza răspunsului de la compilator, interfața de recenzare a codului și modulul de 
+creare interactivă a provocărilor au fost proiectate și scrise integral de către 
+autorul lucrării.
